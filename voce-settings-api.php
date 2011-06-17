@@ -31,10 +31,8 @@ class Voce_Settings_API {
 
 	public function get_setting($setting_key, $group_key, $default = null) {
 		if(is_array($setting_group = get_option($group_key)) && isset($setting_group[$setting_key])) {
-				var_dump("$setting_key");
 				return $setting_group[$setting_key];
 		} elseif(($group = $this->get_group($group_key)) && isset($group->settings[$setting_key]) && !empty($group->settings[$setting_key]->default_value)) {
-			var_dump( is_null($this->get_group($group_key)), isset($group->settings[$setting_key]), !empty($group->settings[$setting_key]->default_value));
 			return $group->settings[$setting_key]->default_value;
 		}
 		return $default;
