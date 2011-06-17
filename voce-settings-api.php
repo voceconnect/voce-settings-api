@@ -289,7 +289,7 @@ class Voce_Setting {
 	}
 
 	public function display() {
-		$value = Voce_Settings_API::get_setting($this->setting_key, $this->group->group_key, $this->default_value);
+		$value = Voce_Settings_API::GetInstance()->get_setting($this->setting_key, $this->group->group_key, $this->default_value);
 		if(!empty($this->args['display_callback'])) {
 			call_user_func_array($this->args['display_callback'], array($value, $this, $this->args));
 		} else {
