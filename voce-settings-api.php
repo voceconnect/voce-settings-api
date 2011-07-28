@@ -104,6 +104,10 @@ class Voce_Settings_Page {
 		}
 	}
 
+	public function add_error($code, $message, $type = 'error') {
+			add_settings_error($this->page_key, $code, $message, $type);
+	}
+
 	/**
 	 * Adds a new group to the page
 	 *
@@ -138,6 +142,8 @@ class Voce_Settings_Page {
 
 	public function sanitize_callback($new_values) {
 		if(current_user_can($this->capability)) {
+			$this->add_error('all', 'Your changes have been saved.', 'updated');
+
 			foreach($this->groups as $group) {
 				$new_value = isset($new_values[$group->group_key]) ? $new_values[$group->group_key] : array();
 				$group->sanitize_callback($new_value);
@@ -154,6 +160,7 @@ class Voce_Settings_Page {
 			?>
 			<div class="wrap">
 				<h2><?php echo $this->title ?></h2>
+				<?php settings_errors($this->page_key); ?>
 				<?php if($this->description) echo "<p>{$this->description}</p>"; ?>
 				<form action="options.php" method="POST">
 					<?php settings_fields($this->page_key); ?>
@@ -192,6 +199,11 @@ class Voce_Settings_Group {
 			add_action('admin_init', array($this, 'admin_init'));
 		}
 	}
+
+	public function add_error($code, $message, $type = 'error') {
+			$this->page->add_error($code, $message, $type);
+	}
+
 
 	public function admin_init() {
 			add_settings_section($this->group_key, $this->title, array($this, 'display'), $this->page->page_key);
@@ -275,6 +287,11 @@ class Voce_Setting {
 			add_action('admin_init', array($this, 'admin_init'));
 		}
 	}
+
+	public function add_error($message, $type = 'error') {
+		$this->group->add_error($this->setting_key, $message, $type);
+	}
+
 
 	public function admin_init() {
 		add_settings_field($this->setting_key, $this->title, array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
