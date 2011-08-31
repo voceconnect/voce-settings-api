@@ -195,6 +195,7 @@ class Voce_Settings_Group {
 		$this->title = $title;
 		$this->capability = $capability ? $capability : $this->page->capability;
 		$this->description = $description;
+		$this->settings = array();
 		if(current_user_can($this->capability)) {
 			add_action('admin_init', array($this, 'admin_init'));
 		}
