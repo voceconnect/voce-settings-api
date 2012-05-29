@@ -49,7 +49,7 @@ function vs_sanitize_email($value, $setting, $args) {
 }
 
 function vs_santize_checkbox($value, $setting, $args) {
-	
+	_deprecated_function( __FUNCTION__, '0.2', 'vs_sanitize_checkbox()' );
 	return vs_sanitize_checkbox($value, $setting, $args);
 }
 
