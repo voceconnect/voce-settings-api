@@ -2,6 +2,7 @@
 /**
  * A simplification of the settings API
  * @author Michael Pretty (prettyboymp)
+ * @version 0.2
  */
 
 if(!class_exists('Voce_Settings_API')) {
@@ -12,6 +13,8 @@ class Voce_Settings_API {
 	private static $instance;
 
 	private $settings_pages;
+	
+	CONST VERSION = 0.2;
 
 	/**
 	 * Returns singleton instance of api
@@ -277,7 +280,7 @@ class Voce_Setting {
 			'capability' => $this->group->capability,
 			'default_value' => '',
 			'display_callback' => '',
-			'sanitize_callbacks' => array('vs_santize_text'),
+			'sanitize_callbacks' => array('vs_sanitize_text'),
 			'description' => ''
 			));
 

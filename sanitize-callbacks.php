@@ -6,7 +6,7 @@
  * @param array $args 
  * @return variable
  */
-function vs_santize_checkbox($value, $setting, $args) {
+function vs_sanitize_checkbox($value, $setting, $args) {
 	return !is_null($value);
 }
 
@@ -17,7 +17,7 @@ function vs_santize_checkbox($value, $setting, $args) {
  * @param array $args 
  * @return variable
  */
-function vs_santize_text($value, $setting, $args) {
+function vs_sanitize_text($value, $setting, $args) {
 	return trim(strip_tags($value));
 }
 
@@ -46,4 +46,14 @@ function vs_sanitize_email($value, $setting, $args) {
 		return null;
 	}
 	return $value;
+}
+
+function vs_santize_checkbox($value, $setting, $args) {
+	
+	return vs_sanitize_checkbox($value, $setting, $args);
+}
+
+function vs_santize_text($value, $setting, $args) {
+	_deprecated_function( __FUNCTION__, '0.2', 'vs_sanitize_text()' );
+	return vs_sanitize_text($value, $setting, $args);
 }
