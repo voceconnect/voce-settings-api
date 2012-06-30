@@ -42,10 +42,12 @@ class Voce_Settings_API {
 	}
 	
 	public function set_setting($setting_key, $group_key, $value) {
-		$setting_group = get_option($group_key);
-		$setting_group[$setting_key] = $value;
-		update_option($group_key, $setting_group);
+		$new_values = get_option($group_key, array());
+		$new_values[$setting_key] = $value;
+		$group = $this->get_group($group_key);
+		$group->sanitize_callback($new_values);
 	}
+
 
 	private function get_group($group_key) {
 		foreach($this->settings_pages as $settings_page) {
