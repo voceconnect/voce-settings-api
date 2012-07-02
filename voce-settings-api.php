@@ -44,8 +44,7 @@ class Voce_Settings_API {
 	public function set_setting($setting_key, $group_key, $value) {
 		$new_values = get_option($group_key, array());
 		$new_values[$setting_key] = $value;
-		$group = $this->get_group($group_key);
-		$group->sanitize_callback($new_values);
+		update_option($group_key, $new_values);
 	}
 
 
