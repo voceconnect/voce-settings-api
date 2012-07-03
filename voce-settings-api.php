@@ -60,9 +60,9 @@ class Voce_Settings_API {
 	/**
 	 * Adds a new settings page if one doesn't already exist
 	 *
-	 * @param string $page_key
 	 * @param string $page_title
 	 * @param string $menu_title
+	 * @param string $page_key
 	 * @param string $capability
 	 * @param string $description
 	 * @param string $parent_page slug for parent page, leave empty to create new menu
