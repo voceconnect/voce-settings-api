@@ -68,8 +68,14 @@ class Voce_Settings_API {
 	 * @param string $parent_page slug for parent page, leave empty to create new menu
 	 * @return Voce_Settings_Page
 	 */
-	public function add_page($page_title, $menu_title, $page_key, $capability = 'manage_options', $description = '', $parent_page = '') {
-		if(!$capability) $capability = 'manage_options';
+	public function add_page($page_title, $menu_title, $page_key, $capability = false, $description = '', $parent_page = '') {
+		if(!$capability){
+			$capability = 'manage_options';
+		} else {
+			add_filter('option_page_capability_'.$page_key.'-page', function($old_capability) use ($capability){
+				return $capability;
+			});
+		}
 
 		if(!$page_key) {
 			$page_key = 'vsp_'.sanitize_key($this->title);
