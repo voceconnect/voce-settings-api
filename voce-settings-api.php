@@ -309,9 +309,9 @@ class Voce_Setting {
 		$this->group->add_error($this->setting_key, $message, $type);
 	}
 
-
 	public function admin_init() {
-		add_settings_field($this->setting_key, $this->title, array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
+		$field_id = implode('-', array($this->group->page->page_key, $this->group->group_key, $this->setting_key));
+		add_settings_field($this->setting_key, sprintf('<label for="%s">%s</label>', $field_id, $this->title), array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
 	}
 
 	public function get_field_name() {
