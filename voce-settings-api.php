@@ -12,7 +12,7 @@ require_once(dirname(__FILE__).'/sanitize-callbacks.php');
 class Voce_Settings_API {
 	private static $instance;
 
-	private $settings_pages;
+	public $settings_pages;
 	
 	CONST VERSION = 0.2;
 
