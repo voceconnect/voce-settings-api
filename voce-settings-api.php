@@ -176,7 +176,7 @@ class Voce_Settings_Page {
 			?>
 			<div class="wrap">
 				<h2><?php echo $this->title ?></h2>
-				<?php settings_errors($this->page_key); ?>
+				<?php settings_errors($this->page_key, false, true); ?>
 				<?php if($this->description) echo "<p>{$this->description}</p>"; ?>
 				<form action="options.php" method="POST">
 					<?php settings_fields($this->page_key); ?>
