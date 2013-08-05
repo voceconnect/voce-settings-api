@@ -1,0 +1,115 @@
+Voce Settings API
+==================
+
+Contributors: prettyboymp, kevinlangleyjr, banderon, voceplatforms  
+Tags: settings, api  
+Requires at least: 3.3  
+Tested up to: 3.6  
+Stable tag: 0.3  
+License: GPLv2 or later  
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+
+## Description
+A simplification of the core WordPress settings API
+
+## Installation
+
+### As theme or plugin dependency:
+> After dropping the plugin into the containing theme or plugin, add the following:
+
+```php
+<?php
+if( ! class_exists( 'Voce_Settings_API' ) ) {
+	require_once( $path_to_voce_settings_api . '/voce-settings-api.php' );
+}
+?>
+```
+
+## Usage
+
+The ```Voce_Settings_API``` is used as a singleton so you can add settings to pages that are created elsewhere just by using the same page_key. The singleton instance can be retreived by using ```Voce_Settings_API::GetInstance()``` and most methods can be chained to easily create multiple groups and setting fields per page.
+
+### Registering a Settings Page
+
+Pages are registered through the ```add_page()``` method of the ```Voce_Settings_API```, which is accessed through the singleton instance of itself.
+
+#### Parameters
+* ```$page_title``` (string) - A string used at the top of the settings page
+* ```$menu_title``` (string) - A string used as the title of the page either in the admin menu or if specified, an admin submenu
+* ```$page_key``` (string) - A unique string used as the page key for the settings page
+* ```$capability``` (string) - The capability level for users to be able to see and edit settings on the page
+* ```$description``` (string) - Short description of the page
+* ```$parent_page``` (string) - Slug for parent page, leave empty to create new menu item
+
+### Registering a Settings Group
+
+Groups are registered through the ```add_group()``` method of the ```Voce_Settings_Page``` class.
+#### Parameters
+* ```$title``` (string) - A string used at the top of the settings group
+* ```$group_key``` (string) - A unique string used as the group key for the settings
+* ```$capability``` (string) - The capability level for users to be able to see and edit settings within the group
+* ```$description``` (string) - Short description of the group
+
+### Registering a Setting Field
+
+Setting fields are registered through the ```add_setting()``` method of the ```Voce_Settings_Group``` class.
+#### Parameters
+* ```$title``` (string) - A string used within the label for the setting field
+* ```$setting_key``` (string) - A unique string used as the setting key
+* ```$args``` (array) - Array of arugments for the setting
+
+
+```php
+<?php
+Voce_Settings_API::GetInstance()->add_page('Site Settings', 'Site Settings', 'site-settings', 'manage_options', 'General settings for site', 'options-general.php' )
+	->add_group('Social Settings', 'social-settings')
+		->add_setting('Station Facebook Page URL', 'facebook_page_url', array(
+			'sanitize_callbacks' => array('vs_sanitize_url')
+		))->group
+		->add_setting('Google+ Profile', 'google_plus_profile', array(
+			'sanitize_callbacks' => array('vs_sanitize_url')
+		))->group->page
+	->add_group('Analytic Settings', 'analytic-settings')
+		->add_setting('Google Analytics Tracking ID', 'ga_id', array(
+			'display_callbacks' => function($value, $setting, $args){
+				// write your own display method or use one of the built in options listed below.
+				return false;
+			},
+			'sanitize_callbacks' => array( function($value, $setting, $args){
+				// write your own sanitization methods or use one of the built in which are listed below.
+				return $value;
+		})));
+?>
+```
+
+### Getting a setting value
+Using the ```get_settting()``` method of the ```Voce_Settings_API```, you can retreive the value of a setting by passing in the setting key, group key, and optionally the default value to return if no value has been set yet.
+
+```php
+<?php
+	$value = Voce_Settings_API::GetInstance()->get_setting($setting_key, $group_key, $default_value);
+?>
+```
+
+### Display Methods
+* ```vs_display_text_field``` *Default*
+* ```vs_display_dropdown```
+* ```vs_display_textarea```
+* ```vs_display_checkbox```
+
+### Sanitization Methods
+* ```vs_sanitize_text``` *Default*
+* ```vs_sanitize_checkbox```
+* ```vs_sanitize_url```
+* ```vs_sanitize_email```
+
+# Changelog
+
+**0.3**  
+*Separating default display method to be a separate function instead of the default logic being within the Settings API*
+
+**0.2**  
+*Fixing typo in sanitization function names.*
+
+**0.1**  
+*Initial release.*
