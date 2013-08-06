@@ -2,7 +2,7 @@
 /**
  * A simplification of the settings API
  * @author Michael Pretty (prettyboymp)
- * @version 0.2
+ * @version 0.3
  */
 
 if(!class_exists('Voce_Settings_API')) {
@@ -13,8 +13,8 @@ class Voce_Settings_API {
 	private static $instance;
 
 	private $settings_pages;
-	
-	CONST VERSION = 0.2;
+
+	CONST VERSION = 0.3;
 
 	/**
 	 * Returns singleton instance of api
@@ -40,7 +40,7 @@ class Voce_Settings_API {
 		}
 		return $default;
 	}
-	
+
 	public function set_setting($setting_key, $group_key, $value) {
 		$new_values = get_option($group_key, array());
 		$new_values[$setting_key] = $value;
@@ -327,12 +327,8 @@ class Voce_Setting {
 		if(!empty($this->args['display_callback'])) {
 			call_user_func_array($this->args['display_callback'], array($value, $this, $this->args));
 		} else {
-			?>
-			<input name="<?php echo $this->get_field_name() ?>" id="<?php echo $this->get_field_id() ?>" value="<?php echo esc_attr($value) ?>" class="regular-text" type="text">
-			<?php if(!empty($this->args['description'])) : ?>
-				<span class="description"><?php echo $this->args['description'] ?></span>
-			<?php endif; ?>
-			<?php
+			// default to text field
+			vs_display_text_field($value, $this, $this->args);
 		}
 	}
 
