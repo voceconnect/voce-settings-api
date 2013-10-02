@@ -1,0 +1,17 @@
+{
+    "name": "voceconnect/voce-settings-api",
+    "description": "A simplification of the core WordPress settings API",
+    "license": "GPLv2+",
+    "authors": [
+        {
+            "name": "Michael Pretty",
+            "email": "mpretty@voceconnect.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+    },
+    "autoload": {
+        "files": ["voce-settings-api.php"]
+    }
+}
