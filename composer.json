@@ -1,6 +1,7 @@
 {
     "name": "voceconnect/voce-settings-api",
     "description": "A simplification of the core WordPress settings API",
+    "type": "wordpress-plugin",
     "license": "GPLv2+",
     "authors": [
         {
