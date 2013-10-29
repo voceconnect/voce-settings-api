@@ -8,7 +8,6 @@
             "email": "mpretty@voceconnect.com"
         }
     ],
-    "minimum-stability": "stable",
     "autoload": {
         "files": ["voce-settings-api.php"]
     }
