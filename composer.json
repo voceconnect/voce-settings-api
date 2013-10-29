@@ -1,7 +1,6 @@
 {
     "name": "voceconnect/voce-settings-api",
     "description": "A simplification of the core WordPress settings API",
-    "type": "wordpress-plugin",
     "license": "GPLv2+",
     "authors": [
         {
@@ -10,9 +9,6 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {
-        "composer/installers": "~1.0"
-    },
     "autoload": {
         "files": ["voce-settings-api.php"]
     }
