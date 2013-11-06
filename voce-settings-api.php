@@ -145,10 +145,15 @@ class Voce_Settings_Page {
 		if(current_user_can($this->capability)) {
 			//only add the page if groups exist
 			if($this->parent_page) {
-				add_submenu_page($this->parent_page, $this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
+				$page_hook = add_submenu_page($this->parent_page, $this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
 			} else {
-				add_menu_page($this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
+				$page_hook = add_menu_page($this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
 			}
+
+			add_action( 'admin_enqueue_scripts', function( $current_hook ) use ( $page_hook ){
+				if( $current_hook == $page_hook )
+					do_action( 'vs_admin_enqueue_scripts', $this, $page_hook );
+			} );
 		}
 	}
 
