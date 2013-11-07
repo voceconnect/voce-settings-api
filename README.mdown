@@ -5,7 +5,7 @@ Contributors: prettyboymp, kevinlangleyjr, banderon, voceplatforms
 Tags: settings, api  
 Requires at least: 3.3  
 Tested up to: 3.6  
-Stable tag: 0.3  
+Stable tag: 0.4  
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,24 +61,24 @@ Setting fields are registered through the ```add_setting()``` method of the ```V
 
 ```php
 <?php
-Voce_Settings_API::GetInstance()->add_page('Site Settings', 'Site Settings', 'site-settings', 'manage_options', 'General settings for site', 'options-general.php' )
-	->add_group('Social Settings', 'social-settings')
-		->add_setting('Station Facebook Page URL', 'facebook_page_url', array(
-			'sanitize_callbacks' => array('vs_sanitize_url')
+Voce_Settings_API::GetInstance()->add_page( 'Site Settings', 'Site Settings', 'site-settings', 'manage_options', 'General settings for site', 'options-general.php' )
+	->add_group( 'Social Settings', 'social-settings' )
+		->add_setting( 'Station Facebook Page URL', 'facebook_page_url', array(
+			'sanitize_callbacks' => array( 'vs_sanitize_url' )
 		))->group
-		->add_setting('Google+ Profile', 'google_plus_profile', array(
-			'sanitize_callbacks' => array('vs_sanitize_url')
+		->add_setting( 'Google+ Profile', 'google_plus_profile', array(
+			'sanitize_callbacks' => array( 'vs_sanitize_url' )
 		))->group->page
-	->add_group('Analytic Settings', 'analytic-settings')
-		->add_setting('Google Analytics Tracking ID', 'ga_id', array(
-			'display_callbacks' => function($value, $setting, $args){
+	->add_group( 'Analytic Settings', 'analytic-settings' )
+		->add_setting( 'Google Analytics Tracking ID', 'ga_id', array(
+			'display_callbacks' => function( $value, $setting, $args ){
 				// write your own display method or use one of the built in options listed below.
 				return false;
 			},
-			'sanitize_callbacks' => array( function($value, $setting, $args){
+			'sanitize_callbacks' => array( function( $value, $setting, $args ){
 				// write your own sanitization methods or use one of the built in which are listed below.
 				return $value;
-		})));
+		} ) ) );
 ?>
 ```
 
@@ -103,7 +103,27 @@ Using the ```get_settting()``` method of the ```Voce_Settings_API```, you can re
 * ```vs_sanitize_url```
 * ```vs_sanitize_email```
 
+### To enqueuing JS and/or CSS on settings pages
+```php
+<?php
+add_action( 'vs_admin_enqueue_scripts', function( $vs_page ){
+	foreach( $vs_page->groups as $group ){
+		foreach( $group->settings as $setting ){
+			if( $setting->args['display_callback'] == 'display_callback_of_custom_setting_field' ){
+				wp_enqueue_script('custom-setting-field-js', plugins_url( 'js/custom-setting-field-js.js', __FILE__ ), array( 'jquery' ) );
+				wp_enqueue_style( 'custom-setting-field-css', plugins_url( 'css/custom-setting-field-css.css', __FILE__ ) );
+				break 2;
+			}
+		}
+	}
+} );
+?>
+```
+
 # Changelog
+
+**0.4**  
+*Adding `vs_admin_enqueue_scripts` hook to allow other plugins to add other types of settings fields that require js or css to only have those assets be enqueued on the settings page they need to be enqueued on*
 
 **0.3**  
 *Separating default display method to be a separate function instead of the default logic being within the Settings API*
