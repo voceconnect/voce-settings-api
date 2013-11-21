@@ -57,7 +57,7 @@ function vs_sanitize_email($value, $setting, $args) {
  */
 function vs_sanitize_dropdown($value, $setting, $args) {
 	$value = strip_tags( trim( $value ) );
-	if( ! in_array( $value, $args['options'] ) )
+	if( ! in_array( $value, array_keys( $args['options'] ) ) )
 		return false;
 
 	return $value;
