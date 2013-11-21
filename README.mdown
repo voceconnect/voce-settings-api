@@ -102,6 +102,7 @@ Using the ```get_settting()``` method of the ```Voce_Settings_API```, you can re
 * ```vs_sanitize_checkbox```
 * ```vs_sanitize_url```
 * ```vs_sanitize_email```
+* ```vs_sanitize_dropdown```
 
 ### To enqueuing JS and/or CSS on settings pages
 ```php
