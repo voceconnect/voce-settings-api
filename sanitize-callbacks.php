@@ -55,6 +55,21 @@ function vs_sanitize_email($value, $setting, $args) {
  * @param array $args
  * @return variable
  */
+function vs_sanitize_dropdown($value, $setting, $args) {
+	$value = strip_tags( trim( $value ) );
+	if( ! in_array( $value, array_keys( $args['options'] ) ) )
+		return false;
+
+	return $value;
+}
+
+/**
+ *
+ * @param variable $value
+ * @param Voce_Setting $setting
+ * @param array $args
+ * @return variable
+ */
 function vs_sanitize_int( $field, $old_value, $new_value, $post_id ) {
 	return intval( $new_value );
 }
