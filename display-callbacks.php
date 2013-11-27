@@ -4,7 +4,7 @@ function vs_display_text_field($value, $setting, $args){
 	?>
 	<input name="<?php echo $setting->get_field_name() ?>" id="<?php echo $setting->get_field_id() ?>" value="<?php echo esc_attr($value) ?>" class="regular-text" type="text">
 	<?php if(!empty($args['description'])) : ?>
-		<span class="description"><?php echo $args['description'] ?></span>
+		<br/><span class="description"><?php echo $args['description'] ?></span>
 	<?php endif;
 }
 
@@ -25,7 +25,7 @@ function vs_display_dropdown($value, $setting, $args) {
 			?>
 		</select>
 		<?php if(!empty($args['description'])) : ?>
-			<span class="description"><?php echo $args['description'] ?></span>
+			<br/><span class="description"><?php echo $args['description'] ?></span>
 		<?php endif;
 	}
 }
@@ -34,7 +34,7 @@ function vs_display_textarea($value, $setting, $args) {
 	?>
 	<textarea id="<?php echo $setting->get_field_id() ?>" name="<?php echo $setting->get_field_name() ?>" rows='7' cols='50' type='textarea'><?php echo esc_html($value) ?></textarea>
 	<?php if(!empty($args['description'])) : ?>
-		<span class="description"><?php echo $args['description'] ?></span>
+		<br/><span class="description"><?php echo $args['description'] ?></span>
 	<?php endif; ?>
 	<?php
 }
@@ -43,6 +43,6 @@ function vs_display_checkbox($value, $setting, $args) {
 	?>
 	<input type="checkbox" id="<?php echo $setting->get_field_id() ?>" name="<?php echo $setting->get_field_name() ?>"<?php echo $value ? ' checked="checked"' : '' ?> />
 	<?php if(!empty($args['description'])) : ?>
-		<span class="description"><?php echo $args['description'] ?></span>
+		<br/><span class="description"><?php echo $args['description'] ?></span>
 	<?php endif;
 }
