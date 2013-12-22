@@ -5,9 +5,10 @@
  * @version 0.4
  */
 
-if(!class_exists('Voce_Settings_API')) {
-require_once(dirname(__FILE__).'/display-callbacks.php');
-require_once(dirname(__FILE__).'/sanitize-callbacks.php');
+if( ! class_exists('Voce_Settings_API' ) ) {
+
+require_once( dirname( __FILE__ ).'/display-callbacks.php' );
+require_once( dirname( __FILE__ ).'/sanitize-callbacks.php' );
 
 class Voce_Settings_API {
 	private static $instance;
@@ -22,7 +23,7 @@ class Voce_Settings_API {
 	 * @return Voce_Settings_API
 	 */
 	public static function GetInstance() {
-		if(!isset(self::$instance)) {
+		if( !isset( self::$instance ) ) {
 			self::$instance = new Voce_Settings_API();
 		}
 		return self::$instance;
@@ -32,25 +33,24 @@ class Voce_Settings_API {
 		$this->settings_pages = array();
 	}
 
-	public function get_setting($setting_key, $group_key, $default = null) {
-		if(is_array($setting_group = get_option($group_key)) && isset($setting_group[$setting_key])) {
-				return $setting_group[$setting_key];
-		} elseif(($group = $this->get_group($group_key)) && isset($group->settings[$setting_key]) && !empty($group->settings[$setting_key]->default_value)) {
+	public function get_setting( $setting_key, $group_key, $default = null ) {
+		if( is_array( $setting_group = get_option( $group_key ) ) && isset( $setting_group[$setting_key] ) ) {
+			return $setting_group[$setting_key];
+		} elseif( ( $group = $this->get_group( $group_key ) ) && isset( $group->settings[$setting_key] ) && !empty( $group->settings[$setting_key]->default_value ) ) {
 			return $group->settings[$setting_key]->default_value;
 		}
 		return $default;
 	}
 
-	public function set_setting($setting_key, $group_key, $value) {
-		$new_values = get_option($group_key, array());
+	public function set_setting( $setting_key, $group_key, $value ) {
+		$new_values = get_option( $group_key, array() );
 		$new_values[$setting_key] = $value;
-		update_option($group_key, $new_values);
+		update_option( $group_key, $new_values );
 	}
 
-
-	private function get_group($group_key) {
-		foreach($this->settings_pages as $settings_page) {
-			if(isset($settings_page->groups[$group_key])) {
+	private function get_group( $group_key ) {
+		foreach( $this->settings_pages as $settings_page ) {
+			if( isset( $settings_page->groups[$group_key] ) ) {
 				return $settings_page->groups[$group_key];
 			}
 		}
@@ -68,23 +68,39 @@ class Voce_Settings_API {
 	 * @param string $parent_page slug for parent page, leave empty to create new menu
 	 * @return Voce_Settings_Page
 	 */
-	public function add_page($page_title, $menu_title, $page_key, $capability = false, $description = '', $parent_page = '') {
-		if(!$capability){
+	public function add_page( $page_title, $menu_title, $page_key, $capability = false, $description = '', $parent_page = '' ) {
+		if( !$capability ){
 			$capability = 'manage_options';
 		} else {
-			add_filter('option_page_capability_'.$page_key.'-page', function($old_capability) use ($capability){
-				return $capability;
-			});
+			add_filter( 'option_page_capability_' . $page_key . '-page', array( $this, 'set_page_capability' ) );
 		}
 
-		if(!$page_key) {
-			$page_key = 'vsp_'.sanitize_key($this->title);
+		if( ! $page_key ) {
+			$page_key = 'vsp_'.sanitize_key( $page_title );
 		}
-		if(!isset($this->settings_pages[$page_key])) {
-			$page = new Voce_Settings_Page($page_title, $menu_title, $page_key . '-page', $capability, $description, $parent_page);
+		if( ! $this->get_page($page_key) ) {
+			$page = new Voce_Settings_Page( $page_title, $menu_title, $page_key . '-page', $capability, $description, $parent_page );
 			$this->settings_pages[$page_key] = $page;
 		}
 		return $this->settings_pages[$page_key];
+	}
+
+	public function get_page( $page_key ){
+		if( isset( $this->settings_pages[$page_key] ) ) {
+			return $this->settings_pages[$page_key];
+		}
+		return false;
+	}
+
+	private function set_page_capability( $old_capability ){
+		global $option_page;
+		if( $option_page ){
+			$page_key = str_replace( '-page', '', $option_page );
+			if( $page = $this->get_page( $page_key ) ){
+				return $page->capability;
+			}
+		}
+		return $old_capability;
 	}
 }
 
@@ -105,7 +121,7 @@ class Voce_Settings_Page {
 	public $groups;
 
 
-	public function __construct($title, $menu_title, $page_key, $capability = 'manage_options', $description = '', $parent_page = '') {
+	public function __construct( $title, $menu_title, $page_key, $capability = 'manage_options', $description = '', $parent_page = '' ) {
 		$this->title = $title;
 		$this->page_key = $page_key;
 		$this->menu_title = $menu_title;
@@ -114,14 +130,21 @@ class Voce_Settings_Page {
 		$this->parent_page = $parent_page;
 		$this->groups = array();
 
-		add_action('admin_menu', array($this, 'admin_menu'));
-		if(current_user_can($this->capability)) {
-			add_action('admin_init', array($this, 'admin_init'));
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+		if( current_user_can( $this->capability ) ) {
+			add_action( 'admin_init', array( $this, 'admin_init' ) );
 		}
 	}
 
-	public function add_error($code, $message, $type = 'error') {
-			add_settings_error($this->page_key, $code, $message, $type);
+	/**
+	 * Adds either a success or error message to the front end after attempting to save
+	 * @param string $setting Slug title of the setting to which this error applies
+ 	 * @param string $code Slug-name to identify the error. Used as part of 'id' attribute in HTML output.
+ 	 * @param string $message The formatted message text to display to the user (will be shown inside styled <div> and <p>)
+ 	 * @param string $type The type of message it is, controls HTML class. Use 'error' or 'updated'.
+	 */
+	public function add_error( $code, $message, $type = 'error' ) {
+		add_settings_error( $this->page_key, $code, $message, $type );
 	}
 
 	/**
@@ -133,41 +156,42 @@ class Voce_Settings_Page {
 	 * @param string $description
 	 * @return Voce_Settings_Group
 	 */
-	public function add_group($title, $group_key, $capability = '', $description = '') {
-		if(!isset($this->groups[$group_key])) {
-			$group = new Voce_Settings_Group($this, $title, $group_key, $capability, $description);
+	public function add_group( $title, $group_key, $capability = '', $description = '' ) {
+		if( !isset( $this->groups[$group_key] ) ) {
+			$group = new Voce_Settings_Group( $this, $title, $group_key, $capability, $description );
 			$this->groups[$group_key] = $group;
 		}
 		return $this->groups[$group_key];
 	}
 
 	public function admin_menu() {
-		if(current_user_can($this->capability)) {
+		if( current_user_can( $this->capability ) ) {
 			//only add the page if groups exist
-			if($this->parent_page) {
-				$page_hook = add_submenu_page($this->parent_page, $this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
+			if( $this->parent_page ) {
+				$page_hook = add_submenu_page( $this->parent_page, $this->title, $this->menu_title, $this->capability, $this->page_key, array( $this, 'display' ) );
 			} else {
-				$page_hook = add_menu_page($this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
+				$page_hook = add_menu_page( $this->title, $this->menu_title, $this->capability, $this->page_key, array( $this, 'display' ) );
 			}
 
-			add_action( 'load-' . $page_hook, function(){
-				do_action( 'vs_admin_enqueue_scripts', $this );
-
-			} );
+			add_action( 'load-' . $page_hook, array( $this, 'admin_enqueue_scripts' ) );
 		}
 	}
 
-	public function admin_init() {
-		register_setting($this->page_key, $this->page_key, array($this, 'sanitize_callback'));
+	public function admin_enqueue_scripts(){
+		do_action( 'vs_admin_enqueue_scripts', $this );
 	}
 
-	public function sanitize_callback($new_values) {
-		if(current_user_can($this->capability)) {
-			$this->add_error('all', 'Your changes have been saved.', 'updated');
+	public function admin_init() {
+		register_setting( $this->page_key, $this->page_key, array( $this, 'sanitize_callback' ) );
+	}
+
+	public function sanitize_callback( $new_values ) {
+		if( current_user_can( $this->capability ) ) {
+			$this->add_error( 'all', 'Your changes have been saved.', 'updated' );
 
 			foreach($this->groups as $group) {
-				$new_value = isset($new_values[$group->group_key]) ? $new_values[$group->group_key] : array();
-				$group->sanitize_callback($new_value);
+				$new_value = isset( $new_values[$group->group_key] ) ? $new_values[$group->group_key] : array();
+				$group->sanitize_callback( $new_value );
 			}
 		}
 		/**
@@ -177,15 +201,15 @@ class Voce_Settings_Page {
 	}
 
 	public function display() {
-		if(current_user_can($this->capability)) {
+		if( current_user_can( $this->capability ) ) {
 			?>
 			<div class="wrap">
 				<h2><?php echo $this->title ?></h2>
-				<?php settings_errors($this->page_key, false, true); ?>
-				<?php if($this->description) echo "<p>{$this->description}</p>"; ?>
+				<?php settings_errors( $this->page_key, false, true ); ?>
+				<?php echo !empty( $this->description )  ? '<p class="description">' . $this->description . '</p>' : ''; ?>
 				<form action="options.php" method="POST">
-					<?php settings_fields($this->page_key); ?>
-					<?php do_settings_sections($this->page_key); ?>
+					<?php settings_fields( $this->page_key ); ?>
+					<?php do_settings_sections( $this->page_key ); ?>
 					<p class="submit">
 						<input type="submit" value="Save Changes" class="button-primary" name="Submit">
 					</p>
@@ -197,13 +221,13 @@ class Voce_Settings_Page {
 }
 
 class Voce_Settings_Group {
+
 	/**
 	 * Pointer to this Section's Page
 	 *
 	 * @var Voce_Settings_Page
 	 */
 	public $page;
-
 	public $title;
 	public $capability;
 	public $group_key;
@@ -217,18 +241,25 @@ class Voce_Settings_Group {
 		$this->capability = $capability ? $capability : $this->page->capability;
 		$this->description = $description;
 		$this->settings = array();
-		if(current_user_can($this->capability)) {
-			add_action('admin_init', array($this, 'admin_init'));
+		if( current_user_can( $this->capability ) ) {
+			add_action( 'admin_init', array( $this, 'admin_init' ) );
 		}
 	}
 
-	public function add_error($code, $message, $type = 'error') {
-			$this->page->add_error($code, $message, $type);
+	/**
+	 * Adds either a success or error message to the front end after attempting to save
+	 * @param string $setting Slug title of the setting to which this error applies
+ 	 * @param string $code Slug-name to identify the error. Used as part of 'id' attribute in HTML output.
+ 	 * @param string $message The formatted message text to display to the user (will be shown inside styled <div> and <p>)
+ 	 * @param string $type The type of message it is, controls HTML class. Use 'error' or 'updated'.
+	 */
+	public function add_error( $code, $message, $type = 'error' ) {
+		$this->page->add_error( $code, $message, $type );
 	}
 
 
 	public function admin_init() {
-			add_settings_section($this->group_key, $this->title, array($this, 'display'), $this->page->page_key);
+		add_settings_section( $this->group_key, $this->title, array( $this, 'display' ), $this->page->page_key );
 	}
 
 	/**
@@ -240,30 +271,30 @@ class Voce_Settings_Group {
 	 * @param string $description
 	 * @return Voce_Setting
 	 */
-	public function add_setting($title, $setting_key, $args = array()) {
-		if(!isset($this->settings[$setting_key])) {
-			$setting = new Voce_Setting($this, $title, $setting_key, $args);
+	public function add_setting( $title, $setting_key, $args = array() ) {
+		if( !isset( $this->settings[$setting_key] ) ) {
+			$setting = new Voce_Setting( $this, $title, $setting_key, $args );
 			$this->settings[$setting_key] = $setting;
 		}
 		return $this->settings[$setting_key];
 	}
 
 	public function display() {
-		if(current_user_can($this->capability)) {
-			if($this->description) echo "<p>{$this->description}</p>";
+		if( current_user_can( $this->capability ) ) {
+			echo !empty( $this->description )  ? '<p class="description">' . $this->description . '</p>' : '';
 		}
 	}
 
 	public function sanitize_callback($new_values) {
-		$old_values = get_option($this->group_key, array());
-		if(current_user_can($this->capability)) {
-			foreach($this->settings as $setting) {
-				$new_value = isset($new_values[$setting->setting_key]) ? $new_values[$setting->setting_key] : null;
-				$old_value = isset($old_values[$setting->setting_key]) ? $old_values[$setting->setting_key] : null;
-				$old_values[$setting->setting_key] = $setting->sanitize($new_value, $old_value);
+		$old_values = get_option( $this->group_key, array() );
+		if( current_user_can( $this->capability ) ) {
+			foreach( $this->settings as $setting ) {
+				$new_value = isset( $new_values[$setting->setting_key] ) ? $new_values[$setting->setting_key] : null;
+				$old_value = isset( $old_values[$setting->setting_key] ) ? $old_values[$setting->setting_key] : null;
+				$old_values[$setting->setting_key] = $setting->sanitize( $new_value, $old_value );
 			}
 		}
-		update_option($this->group_key, $old_values);
+		update_option( $this->group_key, $old_values );
 	}
 }
 
@@ -289,34 +320,41 @@ class Voce_Setting {
 	 * @param string $setting_key
 	 * @param array $args
 	 */
-	public function __construct($group, $title, $setting_key, $args = array()) {
+	public function __construct( $group, $title, $setting_key, $args = array() ) {
 		$this->group = $group;
 		$this->title = $title;
 		$this->setting_key = $setting_key;
 
-		$args = wp_parse_args($args, $defaults = array(
+		$args = wp_parse_args( $args, $defaults = array(
 			'capability' => $this->group->capability,
 			'default_value' => '',
 			'display_callback' => '',
-			'sanitize_callbacks' => array('vs_sanitize_text'),
+			'sanitize_callbacks' => array( 'vs_sanitize_text' ),
 			'description' => ''
-			));
+		) );
 
 		$this->default_value = $args['default_value'];
 		$this->capability = $args['capability'];
 		$this->args = $args;
-		if(current_user_can($this->capability)) {
-			add_action('admin_init', array($this, 'admin_init'));
+		if( current_user_can( $this->capability ) ) {
+			add_action( 'admin_init', array( $this, 'admin_init' ) );
 		}
 	}
 
-	public function add_error($message, $type = 'error') {
-		$this->group->add_error($this->setting_key, $message, $type);
+	/**
+	 * Adds either a success or error message to the front end after attempting to save
+	 * @param string $setting Slug title of the setting to which this error applies
+ 	 * @param string $code Slug-name to identify the error. Used as part of 'id' attribute in HTML output.
+ 	 * @param string $message The formatted message text to display to the user (will be shown inside styled <div> and <p>)
+ 	 * @param string $type The type of message it is, controls HTML class. Use 'error' or 'updated'.
+	 */
+	public function add_error( $message, $type = 'error' ) {
+		$this->group->add_error( $this->setting_key, $message, $type );
 	}
 
 	public function admin_init() {
-		$field_id = implode('-', array($this->group->page->page_key, $this->group->group_key, $this->setting_key));
-		add_settings_field($this->setting_key, sprintf('<label for="%s">%s</label>', $field_id, $this->title), array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
+		$field_id = implode( '-', array( $this->group->page->page_key, $this->group->group_key, $this->setting_key ) );
+		add_settings_field( $this->setting_key, sprintf('<label for="%s">%s</label>', $field_id, $this->title), array($this, 'display'), $this->group->page->page_key, $this->group->group_key );
 	}
 
 	public function get_field_name() {
@@ -328,20 +366,20 @@ class Voce_Setting {
 	}
 
 	public function display() {
-		$value = Voce_Settings_API::GetInstance()->get_setting($this->setting_key, $this->group->group_key, $this->default_value);
-		if(!empty($this->args['display_callback'])) {
-			call_user_func_array($this->args['display_callback'], array($value, $this, $this->args));
+		$value = Voce_Settings_API::GetInstance()->get_setting( $this->setting_key, $this->group->group_key, $this->default_value );
+		if( !empty( $this->args['display_callback'] ) ) {
+			call_user_func_array( $this->args['display_callback'], array( $value, $this, $this->args ) );
 		} else {
 			// default to text field
-			vs_display_text_field($value, $this, $this->args);
+			vs_display_text_field( $value, $this, $this->args );
 		}
 	}
 
-	public function sanitize($new_value, $old_value) {
-		if(current_user_can($this->capability)) {
+	public function sanitize( $new_value, $old_value ) {
+		if( current_user_can( $this->capability ) ) {
 			$old_value = $new_value;
-			foreach($this->args['sanitize_callbacks'] as $callback) {
-				$old_value = call_user_func_array($callback, array($old_value, $this, $this->args));
+			foreach( $this->args['sanitize_callbacks'] as $callback ) {
+				$old_value = call_user_func_array( $callback, array( $old_value, $this, $this->args ) );
 			}
 		}
 		return $old_value;
