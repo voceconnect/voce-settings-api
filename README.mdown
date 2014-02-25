@@ -71,7 +71,7 @@ Voce_Settings_API::GetInstance()->add_page( 'Site Settings', 'Site Settings', 's
 		))->group->page
 	->add_group( 'Analytic Settings', 'analytic-settings' )
 		->add_setting( 'Google Analytics Tracking ID', 'ga_id', array(
-			'display_callbacks' => function( $value, $setting, $args ){
+			'display_callback' => function( $value, $setting, $args ){
 				// write your own display method or use one of the built in options listed below.
 				return false;
 			},
