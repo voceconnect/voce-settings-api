@@ -180,9 +180,9 @@ class Voce_Settings_Page {
 		if(current_user_can($this->capability)) {
 			?>
 			<div class="wrap">
-				<h2><?php echo esc_html( $this->title); ?></h2>
+				<h2><?php echo wp_kses_post( $this->title); ?></h2>
 				<?php settings_errors($this->page_key, false, true); ?>
-				<?php if($this->description) { echo sprintf('<p>%s</p>', esc_html( $this->description ) ); } ?>
+				<?php if($this->description) { echo sprintf('<p>%s</p>', wp_kses_post( $this->description ) ); } ?>
 				<form action="options.php" method="POST">
 					<?php settings_fields($this->page_key); ?>
 					<?php do_settings_sections($this->page_key); ?>
@@ -250,7 +250,7 @@ class Voce_Settings_Group {
 
 	public function display() {
 		if(current_user_can($this->capability)) {
-			if ( $this->description ) { echo sprintf( '<p>%s</p>', esc_html( $this->description ) ); }
+			if ( $this->description ) { echo sprintf( '<p>%s</p>', wp_kses_post( $this->description ) ); }
 		}
 	}
 
@@ -316,7 +316,7 @@ class Voce_Setting {
 
 	public function admin_init() {
 		$field_id = implode('-', array($this->group->page->page_key, $this->group->group_key, $this->setting_key));
-		add_settings_field($this->setting_key, sprintf('<label for="%s">%s</label>', esc_attr( $field_id ), esc_html( $this->title ) ), array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
+		add_settings_field($this->setting_key, sprintf('<label for="%s">%s</label>', esc_attr( $field_id ), wp_kses_post( $this->title ) ), array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
 	}
 
 	public function get_field_name() {
