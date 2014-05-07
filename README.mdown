@@ -1,12 +1,12 @@
 Voce Settings API
 ==================
 
-Contributors: prettyboymp, kevinlangleyjr, banderon, voceplatforms
-Tags: settings, api
-Requires at least: 3.3
-Tested up to: 3.9
-Stable tag: 0.4.4
-License: GPLv2 or later
+Contributors: prettyboymp, kevinlangleyjr, banderon, voceplatforms  
+Tags: settings, api  
+Requires at least: 3.3  
+Tested up to: 3.9  
+Stable tag: 0.4.5  
+License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 ## Description
