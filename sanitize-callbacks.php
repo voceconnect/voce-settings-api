@@ -64,14 +64,12 @@ function vs_sanitize_dropdown($value, $setting, $args) {
 }
 
 /**
- *
+ * 
  * @param variable $value
- * @param Voce_Setting $setting
- * @param array $args
  * @return variable
  */
-function vs_sanitize_int( $field, $old_value, $new_value, $post_id ) {
-	return intval( $new_value );
+function vs_sanitize_int( $value ) {
+	return intval( $value );
 }
 
 /* Deprecated Functions */
