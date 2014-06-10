@@ -1,0 +1,15 @@
+{
+    "name": "voce-settings-api",
+    "description": "Voce Settings API",
+    "version": "0.4.7",
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:voceconnect/voce-settings-api.git"
+    },
+    "bugs": {
+        "url": "https://github.com/voceconnect/voce-settings-api/issues"
+    },
+    "devDependencies": {
+      "grunt-voce-plugins": "latest"
+    }
+}
