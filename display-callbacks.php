@@ -2,7 +2,7 @@
 
 function vs_display_text_field($value, $setting, $args){
 	?>
-	<input name="<?php echo esc_attr( $setting->get_field_name() ); ?>" id="<?php echo $setting->get_field_id() ?>" value="<?php echo esc_attr($value) ?>" class="regular-text" type="text">
+	<input name="<?php echo esc_attr( $setting->get_field_name() ); ?>" id="<?php echo esc_attr( $setting->get_field_id() ) ?>" value="<?php echo esc_attr($value) ?>" class="regular-text" type="text">
 	<?php if(!empty($args['description'])) : ?>
 		<br/><span class="description"><?php echo wp_kses_post( $args['description'] ); ?></span>
 	<?php endif;
@@ -16,11 +16,11 @@ function vs_display_dropdown($value, $setting, $args) {
 		return;
 	} else {
 		?>
-		<select id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo $setting->get_field_name() ?>">
+		<select id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>">
 			<?php
-			foreach($args['options'] as $option_value => $option_text) {
-				$selected = ($option_value == $value) ? 'selected="selected"' : '';
-				echo "<option value='{$option_value}' $selected>{$option_text}</option>";
+			foreach( $args['options'] as $option_value => $option_text ) {
+				$selected = ( $option_value == $value ) ? 'selected="selected"' : '';
+				echo sprintf( "<option value='%s' %s</option>", esc_attr( $option_value ), selected( $option_value, $value, false ) );
 			}
 			?>
 		</select>
@@ -32,7 +32,7 @@ function vs_display_dropdown($value, $setting, $args) {
 
 function vs_display_textarea($value, $setting, $args) {
 	?>
-	<textarea id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo $setting->get_field_name() ?>" rows='7' cols='50' type='textarea'><?php echo esc_html($value) ?></textarea>
+	<textarea id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>" rows='7' cols='50' type='textarea'><?php echo esc_html($value) ?></textarea>
 	<?php if(!empty($args['description'])) : ?>
 		<br/><span class="description"><?php echo wp_kses_post( $args['description'] ); ?></span>
 	<?php endif; ?>
@@ -41,7 +41,7 @@ function vs_display_textarea($value, $setting, $args) {
 
 function vs_display_checkbox($value, $setting, $args) {
 	?>
-	<input type="checkbox" id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo $setting->get_field_name() ?>"<?php echo $value ? ' checked="checked"' : '' ?> />
+	<input type="checkbox" id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>" <?php checked( $value ) ?> />
 	<?php if(!empty($args['description'])) : ?>
 		<br/><span class="description"><?php echo wp_kses_post( $args['description'] ); ?></span>
 	<?php endif;
