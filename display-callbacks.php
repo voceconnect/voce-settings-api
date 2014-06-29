@@ -41,7 +41,7 @@ function vs_display_textarea($value, $setting, $args) {
 
 function vs_display_checkbox($value, $setting, $args) {
 	?>
-	<input type="checkbox" id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>" <?php checked( $value ) ?> />
+	<input type="checkbox" id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>" <?php checked( $value, 'on' ) ?> />
 	<?php if(!empty($args['description'])) : ?>
 		<br/><span class="description"><?php echo wp_kses_post( $args['description'] ); ?></span>
 	<?php endif;
