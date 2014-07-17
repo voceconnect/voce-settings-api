@@ -2,7 +2,7 @@
 /**
  * A simplification of the settings API
  * @author Michael Pretty (prettyboymp)
- * @version 0.4.7
+ * @version 0.4.8
  */
 
 if(!class_exists('Voce_Settings_API')) {
@@ -14,7 +14,7 @@ class Voce_Settings_API {
 
 	private $settings_pages;
 
-	CONST VERSION = '0.4.7';
+	CONST VERSION = '0.4.8';
 
 	/**
 	 * Returns singleton instance of api
