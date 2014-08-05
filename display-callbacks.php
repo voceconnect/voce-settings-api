@@ -20,7 +20,7 @@ function vs_display_dropdown($value, $setting, $args) {
 			<?php
 			foreach( $args['options'] as $option_value => $option_text ) {
 				$selected = ( $option_value == $value ) ? 'selected="selected"' : '';
-				echo sprintf( "<option value='%s' %s</option>", esc_attr( $option_value ), selected( $option_value, $value, false ) );
+				echo sprintf( "<option value='%s' %s>%s</option>", esc_attr( $option_value ), selected( $option_value, $value, false ), $option_text );
 			}
 			?>
 		</select>
