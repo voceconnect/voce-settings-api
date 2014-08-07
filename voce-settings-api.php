@@ -115,9 +115,7 @@ class Voce_Settings_Page {
 		$this->groups = array();
 
 		add_action('admin_menu', array($this, 'admin_menu'));
-		if(current_user_can($this->capability)) {
-			add_action('admin_init', array($this, 'admin_init'));
-		}
+		add_action('admin_init', array($this, 'admin_init'));
 	}
 
 	public function add_error($code, $message, $type = 'error') {
@@ -158,7 +156,9 @@ class Voce_Settings_Page {
 	}
 
 	public function admin_init() {
-		register_setting($this->page_key, $this->page_key, array($this, 'sanitize_callback'));
+		if(current_user_can($this->capability)) {
+			register_setting($this->page_key, $this->page_key, array($this, 'sanitize_callback'));
+		}
 	}
 
 	public function sanitize_callback($new_values) {
@@ -217,9 +217,7 @@ class Voce_Settings_Group {
 		$this->capability = $capability ? $capability : $this->page->capability;
 		$this->description = $description;
 		$this->settings = array();
-		if(current_user_can($this->capability)) {
-			add_action('admin_init', array($this, 'admin_init'));
-		}
+		add_action('admin_init', array($this, 'admin_init'));
 	}
 
 	public function add_error($code, $message, $type = 'error') {
@@ -228,7 +226,9 @@ class Voce_Settings_Group {
 
 
 	public function admin_init() {
+		if(current_user_can($this->capability)) {
 			add_settings_section($this->group_key, $this->title, array($this, 'display'), $this->page->page_key);
+		}
 	}
 
 	/**
@@ -304,9 +304,7 @@ class Voce_Setting {
 		$this->default_value = $args['default_value'];
 		$this->capability = $args['capability'];
 		$this->args = $args;
-		if(current_user_can($this->capability)) {
-			add_action('admin_init', array($this, 'admin_init'));
-		}
+		add_action('admin_init', array($this, 'admin_init'));
 	}
 
 	public function add_error($message, $type = 'error') {
@@ -314,8 +312,10 @@ class Voce_Setting {
 	}
 
 	public function admin_init() {
-		$field_id = implode('-', array($this->group->page->page_key, $this->group->group_key, $this->setting_key));
-		add_settings_field($this->setting_key, sprintf('<label for="%s">%s</label>', esc_attr( $field_id ), wp_kses_post( $this->title ) ), array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
+		if(current_user_can($this->capability)) {
+			$field_id = implode('-', array($this->group->page->page_key, $this->group->group_key, $this->setting_key));
+			add_settings_field($this->setting_key, sprintf('<label for="%s">%s</label>', esc_attr( $field_id ), wp_kses_post( $this->title ) ), array($this, 'display'), $this->group->page->page_key, $this->group->group_key);
+		}
 	}
 
 	public function get_field_name() {
