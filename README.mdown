@@ -123,4 +123,4 @@ add_action( 'vs_admin_enqueue_scripts', function( $vs_page ){
 
 # Changelog
 
-https://github.com/voceconnect/voce-settings-api/releases
+Please refer to full changelog at https://github.com/voceconnect/voce-settings-api/releases.
