@@ -2,7 +2,7 @@
 /**
  * A simplification of the settings API
  * @author Michael Pretty (prettyboymp)
- * @version 0.4.9
+ * @version 0.5
  */
 
 if(!class_exists('Voce_Settings_API')) {
