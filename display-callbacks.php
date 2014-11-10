@@ -40,7 +40,7 @@ function vs_display_textarea($value, $setting, $args) {
 }
 
 function vs_display_checkbox($value, $setting, $args) {
-	$value = in_array($value, array('on', true))
+	$value = in_array($value, array('on', true), true);
 	?>
 	<input type="checkbox" id="<?php echo esc_attr( $setting->get_field_id() ); ?>" name="<?php echo esc_attr( $setting->get_field_name() ) ?>" <?php checked( $value ) ?> />
 	<?php if(!empty($args['description'])) : ?>
