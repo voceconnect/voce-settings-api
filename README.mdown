@@ -123,14 +123,4 @@ add_action( 'vs_admin_enqueue_scripts', function( $vs_page ){
 
 # Changelog
 
-**0.4**  
-*Adding `vs_admin_enqueue_scripts` hook to allow other plugins to add other types of settings fields that require js or css to only have those assets be enqueued on the settings page they need to be enqueued on*
-
-**0.3**  
-*Separating default display method to be a separate function instead of the default logic being within the Settings API*
-
-**0.2**  
-*Fixing typo in sanitization function names.*
-
-**0.1**  
-*Initial release.*
+https://github.com/voceconnect/voce-settings-api/releases
