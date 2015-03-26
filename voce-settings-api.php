@@ -150,8 +150,10 @@ class Voce_Settings_Page {
 				$page_hook = add_menu_page($this->title, $this->menu_title, $this->capability, $this->page_key, array($this, 'display'));
 			}
 
-			add_action( 'load-' . $page_hook, function() use ($this){
-				do_action( 'vs_admin_enqueue_scripts', $this );
+			$page = $this;
+
+			add_action( 'load-' . $page_hook, function() use ($page){
+				do_action( 'vs_admin_enqueue_scripts', $page );
 			} );
 		}
 	}
