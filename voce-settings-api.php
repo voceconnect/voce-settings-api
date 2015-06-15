@@ -14,7 +14,7 @@ class Voce_Settings_API {
 
 	private $settings_pages;
 
-	CONST VERSION = '0.5.2';
+	CONST VERSION = '0.5.3';
 
 	/**
 	 * Returns singleton instance of api
