@@ -18,7 +18,7 @@ function vs_sanitize_checkbox($value, $setting, $args) {
  * @return variable
  */
 function vs_sanitize_text($value, $setting, $args) {
-	return ( $args['display_callback'] == 'vs_display_textarea' ) ? strip_tags( trim( $value ) ) : sanitize_text_field( $value );
+	return ( $args['display_callback'] === 'vs_display_textarea' ) ? strip_tags( trim( $value ) ) : sanitize_text_field( $value );
 }
 
 /**
@@ -64,7 +64,7 @@ function vs_sanitize_dropdown($value, $setting, $args) {
 }
 
 /**
- * 
+ *
  * @param variable $value
  * @return variable
  */
