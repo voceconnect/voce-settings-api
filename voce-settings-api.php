@@ -14,7 +14,7 @@ class Voce_Settings_API {
 
 	private $settings_pages;
 
-	CONST VERSION = '0.5.3';
+	CONST VERSION = '0.6.0';
 
 	/**
 	 * Returns singleton instance of api
@@ -85,6 +85,32 @@ class Voce_Settings_API {
 			$this->settings_pages[$page_key] = $page;
 		}
 		return $this->settings_pages[$page_key];
+	}
+
+	public static function do_settings_sections( $page ) {
+		global $wp_settings_sections, $wp_settings_fields;
+
+		if ( ! isset( $wp_settings_sections[$page] ) )
+			return;
+
+		foreach ( (array) $wp_settings_sections[$page] as $section ) {
+
+			do_action( 'vs_before_section', $section, $page );
+
+			if ( $section['title'] )
+				echo "<h2>{$section['title']}</h2>\n";
+
+			if ( $section['callback'] )
+				call_user_func( $section['callback'], $section );
+
+			if ( ! isset( $wp_settings_fields ) || !isset( $wp_settings_fields[$page] ) || !isset( $wp_settings_fields[$page][$section['id']] ) )
+				continue;
+			echo '<table class="form-table">';
+			do_settings_fields( $page, $section['id'] );
+			echo '</table>';
+
+			do_action( 'vs_after_section', $section, $page );
+		}
 	}
 }
 
@@ -186,7 +212,7 @@ class Voce_Settings_Page {
 				<?php if($this->description) { echo sprintf('<p>%s</p>', wp_kses_post( $this->description ) ); } ?>
 				<form action="options.php" method="POST">
 					<?php settings_fields($this->page_key); ?>
-					<?php do_settings_sections($this->page_key); ?>
+					<?php Voce_Settings_API::do_settings_sections($this->page_key); ?>
 					<p class="submit">
 						<input type="submit" value="Save Changes" class="button-primary" name="Submit">
 					</p>
