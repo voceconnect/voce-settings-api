@@ -96,10 +96,12 @@ Using the ```get_settting()``` method of the ```Voce_Settings_API```, you can re
 * ```vs_display_dropdown```
 * ```vs_display_textarea```
 * ```vs_display_checkbox```
+* ```vs_display_multiple_checkboxes```
 
 ### Sanitization Methods
 * ```vs_sanitize_text``` *Default*
 * ```vs_sanitize_checkbox```
+* ```vs_sanitize_multiple_checkboxes```
 * ```vs_sanitize_url```
 * ```vs_sanitize_email```
 * ```vs_sanitize_dropdown```
