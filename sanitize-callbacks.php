@@ -72,6 +72,32 @@ function vs_sanitize_int( $value ) {
 	return intval( $value );
 }
 
+/**
+ *
+ * @param variable $value
+ * @param Voce_Setting $setting
+ * @param array $args
+ * @return variable
+ */
+function vs_sanitize_multiple_checkboxes($values, $setting, $args) {
+	if( !is_array( $values ) || empty( $values ) ){
+		return false;
+	}
+
+	$sanitized_values = [];
+
+	foreach( $values as $value ){
+		$value = sanitize_text_field( $value );
+		if( ! in_array( $value, array_keys( $args['options'] ) ) ){
+			continue;
+		}
+
+		$sanitized_values[] = $value;
+	}
+
+	return $sanitized_values;
+}
+
 /* Deprecated Functions */
 function vs_santize_checkbox($value, $setting, $args) {
 	_deprecated_function( __FUNCTION__, '0.2', 'vs_sanitize_checkbox()' );

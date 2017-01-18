@@ -46,3 +46,28 @@ function vs_display_checkbox($value, $setting, $args) {
 		<br/><span class="description"><?php echo wp_kses_post( $args['description'] ); ?></span>
 	<?php endif;
 }
+
+function vs_display_multiple_checkboxes($value, $setting, $args) {
+	if( empty( $args['options'] ) ){
+		printf( '<p class="error">An options argument is required in the $args array to use %s</p>', __FUNCTION__ );
+		return;
+	}
+
+	if( !is_array( $value ) ){
+		$value = array( $value );
+	}
+
+	foreach( $args['options'] as $option_value => $option_text ){
+		printf( '<p><label><input type="checkbox" id="%s" name="%s" value="%s" %s /> %s</label></p>',
+			esc_attr( $setting->get_field_id() ),
+			esc_attr( $setting->get_field_name() . '[]' ),
+			esc_attr( $option_value ),
+			checked( in_array( $option_value, $value ), true, false ),
+			esc_attr( $option_text )
+		);
+	}
+
+	if(!empty($args['description'])){
+		printf( '<br/><span class="description">%s</span>', wp_kses_post( $args['description'] ) );
+	}
+}
