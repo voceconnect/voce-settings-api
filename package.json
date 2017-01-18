@@ -1,7 +1,7 @@
 {
     "name": "voce-settings-api",
     "description": "Voce Settings API",
-    "version": "0.5.4",
+    "version": "0.5.5",
     "repository": {
         "type": "git",
         "url": "git@github.com:voceconnect/voce-settings-api.git"
