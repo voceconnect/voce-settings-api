@@ -4,8 +4,8 @@ Voce Settings API
 Contributors: prettyboymp, kevinlangleyjr, banderon, voceplatforms  
 Tags: settings, api  
 Requires at least: 3.3  
-Tested up to: 4.2.2  
-Stable tag: 0.5.3  
+Tested up to: 4.5.2
+Stable tag: 0.6.0
 License: GPLv2 or later  
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,13 @@ add_action( 'vs_admin_enqueue_scripts', function( $vs_page ){
 } );
 ?>
 ```
+
+
+### Actions
+
+* ```voce-settings-api.before_section``` Called before each section is output.
+* ```voce-settings-api.after_section``` Called after each section is output.
+
 
 # Changelog
 
